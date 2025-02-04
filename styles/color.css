@@ -1,0 +1,94 @@
+:root {
+  --transparent-color: transparent;
+  --primary-color: #094f6d;
+  --dark-blue-color: #002742;
+  --full-black-color: #000;
+  --black-color: #333;
+  --white-color: #fff;
+  --grey-100-color: #e9e9e9;
+  --grey-200-color: #c0c0c0;
+  --grey-250-color: #f9f9f9;
+  --grey-300-color: #969696;
+  --grey-350-color: #828282;
+  --grey-400-color: #4a4a4a;
+  --border-grey-color: #e9e9e9;
+  --yellow-color: #f5b505;
+  --yellow-100-color: #fff4cc;
+  --red-200-color: #f0484e;
+  --green-400-color: #10675e;
+  --green-250-color: #ddf5f3;
+  --green-200-color: #71d5cb;
+  --green-150-color: #aae6e0;
+  --green-100-color: #98fdf3;
+  --blue-200-color: #31abf0;
+  --blue-300-color: #457b9b;
+  --font-inter: "Inter", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+  --toastify-z-index: 9999999;
+}
+.text-transparent-color {
+  color: var(--transparent-color);
+}
+.text-primary-color {
+  color: var(--primary-color);
+}
+.text-dark-blue-color {
+  color: var(--dark-blue-color);
+}
+.text-full-black-color {
+  color: var(--full-black-color);
+}
+.text-black-color {
+  color: var(--black-color);
+}
+.text-white-color {
+  color: var(--white-color);
+}
+.text-grey-100-color {
+  color: var(--grey-100-color);
+}
+.text-grey-200-color {
+  color: var(--grey-200-color);
+}
+.text-grey-250-color {
+  color: var(--grey-250-color);
+}
+.text-grey-300-color {
+  color: var(--grey-300-color);
+}
+.text-grey-350-color {
+  color: var(--grey-350-color);
+}
+.text-grey-400-color {
+  color: var(--grey-400-color);
+}
+.text-yellow-color {
+  color: var(--yellow-color);
+}
+.text-yellow-100-color {
+  color: var(--yellow-100-color);
+}
+.text-red-200-color {
+  color: var(--red-200-color);
+}
+.text-green-400-color {
+  color: var(--green-400-color);
+}
+.text-green-250-color {
+  color: var(--green-250-color);
+}
+.text-green-200-color {
+  color: var(--green-200-color);
+}
+.text-green-150-color {
+  color: var(--green-150-color);
+}
+.text-green-100-color {
+  color: var(--green-100-color);
+}
+.text-blue-200-color {
+  color: var(--blue-200-color);
+}
+.text-blue-300-color {
+  color: var(--blue-300-color);
+}

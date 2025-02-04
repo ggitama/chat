@@ -1,0 +1,76 @@
+.wrapper__pageInfo {
+  float: left;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  select {
+    margin-left: 15px;
+  }
+}
+
+.wrapper__pagination {
+  :global {
+    .pagination {
+      display: flex;
+      padding-left: 0;
+      list-style: none;
+      border-radius: 0.25rem;
+      margin-bottom: 0;
+      justify-content: flex-end;
+    }
+    .page-item {
+      height: 35px;
+      align-items: center;
+      display: flex;
+    }
+
+    .page-link {
+      color: #6c757d;
+      border-radius: 4px;
+      min-width: 35px;
+      height: 35px;
+      padding: 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid var(--primary-color);
+      margin-left: 6px;
+      margin-right: 6px;
+    }
+
+    .page-item.disabled .page-link {
+      color: #6c757d;
+      pointer-events: none;
+      cursor: auto;
+      background-color: #fff;
+      border-color: #dee2e6;
+      svg {
+        path {
+          fill: #dee2e6;
+        }
+      }
+    }
+
+    .page-item:first-child .page-link {
+      margin-left: 0;
+      border-top-left-radius: 0.25rem;
+      border-bottom-left-radius: 0.25rem;
+    }
+
+    .page-item.active.disabled .page-link {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      height: 100%;
+    }
+
+    .page-item:last-child .page-link {
+      border-top-right-radius: 0.25rem;
+      border-bottom-right-radius: 0.25rem;
+    }
+
+    .page-item .page-link:focus {
+      box-shadow: none;
+    }
+  }
+}

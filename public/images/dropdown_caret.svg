@@ -1,0 +1,7 @@
+<svg id="Component_1_1" data-name="Component 1 – 1" xmlns="http://www.w3.org/2000/svg" width="4" height="5" viewBox="0 0 4 5">
+  <rect id="Rectangle_1" data-name="Rectangle 1" width="4" height="5" fill="#fff"/>
+  <g id="Polygon_1" data-name="Polygon 1" transform="translate(3.5 4) rotate(180)" fill="#fff">
+    <path d="M 2.190984964370728 2.5 L 0.8090149760246277 2.5 L 1.5 1.118029952049255 L 2.190984964370728 2.5 Z" stroke="none"/>
+    <path d="M 1.5 0 L 3 3 L 0 3 L 1.5 0 Z" stroke="none" fill="#707070"/>
+  </g>
+</svg>
