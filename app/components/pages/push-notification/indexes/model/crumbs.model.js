@@ -6,12 +6,12 @@ export const crumbItems = ()=>{
       path:"/"
     },
     {
-      breadcrumbName: 'Push Notifications Management',
+      breadcrumbName: 'User Management',
       path:"#"
     },
     {
       breadcrumbName: 'List',
-      path:"/push-notification/"
+      path:"/chat-users/"
     }
   ]
 }

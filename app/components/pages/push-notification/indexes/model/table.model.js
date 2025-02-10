@@ -22,102 +22,32 @@ export const columnsTable = (
       align: "center",
       width: 50,
       render:(text,row,index)=>{
-        let rowIndex = state.pagination.pageSize*(state.pagination.currentPage-1)
-        return rowIndex+index+1
+        return index + 1;
       }
     },
     {
-      title: (
-        <SortableHeader
-          dataSource={state.DATA_SORT}
-          onChange={(value) => {
-            handler.sortableOnChange(value)}
-          }
-          dataKey="notificationName"
-          title="Notification Name"
-        />
-      ),
-      fixed: true,
-      dataIndex: "notificationName",
-      key: "notificationName",
-      width: 180
+      title: 'Name',
+      key: 'displayName', 
+      dataIndex: 'displayName', 
     },
     {
-      title: (
-        <SortableHeader
-          dataSource={state.DATA_SORT}
-          onChange={(value) => {
-            handler.sortableOnChange(value)}
-          }
-          dataKey="notificationType"
-          title="Notification Type"
-        />
-      ),
-      dataIndex: "notificationType",
-      key: "notificationType",
-      width: 180
+      title: 'Email', 
+      key: 'email', 
+      dataIndex: 'email', 
     },
     {
-      title: "Mobile Image",
-      dataIndex: "mobileImageUrl",
-      key: "mobileImageUrl",
-      render: (text, row, index) => (
-        <Image src={`${row.mobileImageUrl}`} fallback={fallback} preview={false} crossOrigin={"true"} width={width} alt="test image" />
-      ),
-      width: 180
-    },
-    {
-      title: "Platform",
-      dataIndex: "platform",
-      key: "platform",
-      width: 180,
-      render: (text, row, index) => {
-        let parsing;
-        switch (row.platform) {
-          case 'android':
-            parsing = 'Android'
-            break;
-          case 'ios':
-            parsing = 'iOS'
-            break;
-          default:
-            parsing = row.platform
-            break;
-        }
-        return parsing;
+      title: 'Status',
+      key: 'status',
+      dataIndex: 'status',
+      render: (value) => {
+        if (!value) return '-'; // Fallback jika value undefined atau null
+        const statusMapping = {
+          TL: 'Tour Leader',
+          User: 'User',
+        };
+        return statusMapping[value] || value;
       },
-    },
-    {
-      title: (
-        <SortableHeader
-          dataSource={state.DATA_SORT}
-          onChange={(value) => {
-            handler.sortableOnChange(value)}
-          }
-          dataKey="sendNotificationDate"
-          title="Send Notification Date"
-        />
-      ),
-      dataIndex: "sendNotificationDate",
-      key: "sendNotificationDate",
-      width: 180
-    },
-    {
-      title: (
-        <SortableHeader
-          dataSource={state.DATA_SORT}
-          onChange={(value) => {
-            handler.sortableOnChange(value)}
-          }
-          dataKey="status"
-          title="Status"
-        />
-      ),
-      dataIndex: "status",
-      key: "status",
-      width: 180
-    },
-
+    },     
     {
       title: "Action",
       key: "action",

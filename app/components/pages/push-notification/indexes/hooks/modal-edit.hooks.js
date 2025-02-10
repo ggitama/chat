@@ -50,25 +50,19 @@ export const useModalEditHooks = (state, dispatch, stateKey) => {
       let status = dataRow?.status == 'active' || dataRow?.status === true
       let modalForm = schemaModal()
 
-      ModelHelper.setter(modalForm, "status", status)
-      ModelHelper.setter(modalForm, "notificationName", dataRow?.notificationName)
-      ModelHelper.setter(modalForm, "notificationType", dataRow?.notificationType)
-      ModelHelper.setter(modalForm, "mobileImageUrl", dataRow?.mobileImageUrl)
-      ModelHelper.setter(modalForm, "audience", dataRow?.audience)
-      ModelHelper.setter(modalForm, "sendNotificationDate", reformatDate(dataRow?.sendNotificationDate))
-      ModelHelper.setter(modalForm, "description", dataRow?.description)
-      ModelHelper.setter(modalForm, "platform", dataRow?.platform)
+      ModelHelper.setter(modalForm, "displayName", dataRow?.displayName)
+      ModelHelper.setter(modalForm, "email", dataRow?.email)
+      ModelHelper.setter(modalForm, "status", dataRow?.status)
+      ModelHelper.setter(modalForm, "phoneNumber", dataRow?.phoneNumber)
+      ModelHelper.setter(modalForm, "photoURL", dataRow?.photoURL)
 
       if ('errors' in stateValue) {
         let errors = stateValue.errors
+        ModelHelper.setter(modalForm, "displayName", errors.displayName, 'error')
+        ModelHelper.setter(modalForm, "email", errors.email, 'error')
         ModelHelper.setter(modalForm, "status", errors.status, 'error')
-        ModelHelper.setter(modalForm, "notificationName", errors.notificationName, 'error')
-        ModelHelper.setter(modalForm, "notificationType", errors.notificationType, 'error')
-        ModelHelper.setter(modalForm, "mobileImageUrl", errors.mobileImageUrl, 'error')
-        ModelHelper.setter(modalForm, "audience", errors.audience, 'error')
-        ModelHelper.setter(modalForm, "sendNotificationDate", errors.sendNotificationDate, 'error')
-        ModelHelper.setter(modalForm, "description", errors.description, 'error')
-        ModelHelper.setter(modalForm, "platform", errors.platform, 'error')
+        ModelHelper.setter(modalForm, "phoneNumber", errors.phoneNumber, 'error')
+        ModelHelper.setter(modalForm, "photoURL", errors.photoURL, 'error')
       }
 
       setFormData({

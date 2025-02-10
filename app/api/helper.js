@@ -46,6 +46,7 @@ import {
   managePopups,
   deletePopups,
   fetchCustomerList,
+  fetchChatUsersDatatable
 } from ".";
 import Cookies from "js-cookie";
 import {
@@ -507,9 +508,36 @@ export const handleFetchVoucherManagementDatatable = async(type,payload)=>{
   return generalResponse(response)
 }
 
+// CHAT USER
+export const handleFetchChatUsersDatatable = async (payload) => {
+  const { result, error } = await fetchChatUsersDatatable(payload);
+  let resultData = [];
+  let pagination = [];
+  let isError = "";
+
+  if(result){
+    if(result.statusCode == 200){
+      result.responseData.map((item) => {
+        resultData.push(item);
+      });
+      pagination = result.paging;
+    }else{
+      isError = result.statusMessage;
+    }
+    
+  }else{
+    isError = error.message;
+  }
+
+  return { resultData, pagination, isError};
+}
+
+
 export * as PromoCmsAudits from "./promo/cms-audits"
 export * as IdentityRoleManagement from "./identity/role-management"
 
 export * as BookingApi from "./booking" 
 export * as IdentityApi from "./identity"
 export * as PromoApi from "./promo"
+export * as ChatApi from "./chat"
+

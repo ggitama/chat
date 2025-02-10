@@ -1,7 +1,7 @@
 import ApiHelper from "@/util/cms/api.helper";
 
 export const fetchPushNotificationsDatatable = async ( body ) => {
-    let response = await ApiHelper.handlePOSTRequest({
+    let response = await ApiHelper.handleGETRequest({
             api: "fetchPushNotificationsDatatable", body
         });
     return ApiHelper.generalResponse(response)
@@ -14,17 +14,9 @@ export const managePushNotifications = async ( body ) =>{
     return ApiHelper.generalResponse(response)
 }
 
-export const deletePushNotifications = async ( body ) => {
-    let response = await ApiHelper.handlePOSTRequest({
-        api:"deletePushNotifications", body
+export const deletePushNotifications = async ( formData ) => {
+    let response = await ApiHelper.handleDELRequest({
+        api:"deletePushNotifications", formData
     });
-    return ApiHelper.generalResponse(response)
-}
-
-export const detailPushNotifications = async ( query ) => {
-    let response = await ApiHelper.handleGETRequest({
-        api:"detailPushNotifications", query
-    })
-
     return ApiHelper.generalResponse(response)
 }

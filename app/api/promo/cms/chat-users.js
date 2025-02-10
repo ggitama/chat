@@ -1,7 +1,7 @@
 import ApiHelper from "@/util/cms/api.helper";
 
 export const fetchChatUsersDatatable = async ( body ) => {
-    let response = await ApiHelper.handlePOSTRequest({
+    let response = await ApiHelper.handleGETRequest({
             api: "fetchChatUsersDatatable", body
         });
     return ApiHelper.generalResponse(response)

@@ -9,14 +9,14 @@ export const menu = () => [
   },
   {
     key: "chat-users",
-    title: "Users Management",
+    title: "User Management",
     icon: "icon-widgets",
     link: "/chat-users/test-index",
   },
   {
-    key: "chat-messages",
-    title: "Messages Management",
+    key: "popup",
+    title: "Chat Management",
     icon: "icon-widgets",
-    link: "/chat-messages/test-index",
+    link: "/popups/test-index",
   },
 ];

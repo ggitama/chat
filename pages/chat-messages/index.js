@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, Table } from "antd";
-import Link from "next/link";
-
 import { useCallback } from "react";
 import {
   eventHandleFilter,
   handleValidateFilter,
 } from "@/components/pages/list-data/eventHandleFIlterForm";
-import { formFilterScheme, columnTableScheme } from "@/components/pages/banners/list-data/bannerScheme";
+import { formFilterScheme, columnTableScheme } from "@/components/pages/popups/list-data/bannerScheme";
 import { NotificationManager } from "react-notifications";
 import CircularProgress from "@/components/CircularProgress";
-import { ModalUpdateStatus } from "@/components/pages/banners/list-data/modalUpdateStatus";
-import { ModalEditForm } from "@/components/pages/banners/list-data/modalEditForm";
+import { ModalUpdateStatus } from "@/components/pages/popups/list-data/modalUpdateStatus";
+import { ModalEditForm } from "@/components/pages/popups/list-data/modalEditForm";
 import { Pagination } from "antd";
-import { ModalCreateForm } from "@/components/pages/banners/list-data/modalCreateForm";
+import { ModalCreateForm } from "@/components/pages/popups/list-data/modalCreateForm";
 import DynamicFilter from "@/components/Form/DynamicFilter";
 import { FilterOutlined, FilterFilled } from "@ant-design/icons";
-import { handleFetchBannersDatatable, handleDeleteBanners, handleManageBanners, handleVouchersList } from "app/api/helper";
+import { handleFetchPopupsDatatable, 
+         handleDeletePopups, 
+         handleManagePopups, 
+         handleFetchChatUsersDatatable,
+         handleDeletePushNotifications,
+         handleManagePushNotifications
+} from "app/api/helper";
 
 const ListData = (props) => {
   const { screenHeight, screenWidth } = props;
@@ -31,7 +35,6 @@ const ListData = (props) => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [listData, setListData] = useState();
-  const [voucherListData, setVoucherListData] = useState();
   const [totalData, setTotalData] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,7 +46,7 @@ const ListData = (props) => {
   const [isModalEditFormShow, setIsModalEditFormShow] = useState(false);
   const [isModalCreateFormShow, setIsModalCreateFormShow] = useState(false);
   const [dataSort, setDataSort] = useState([]);
-  
+
   useEffect(() => {
     setFormFilter([...formFilterScheme()]);
   }, []);
@@ -54,11 +57,11 @@ const ListData = (props) => {
         ? updatedCurrentPage
         : currentPage;
       const dataPageSize = updatedPageSize ? updatedPageSize : pageSize;
-      const sort = dataSort.length ? dataSort : [{ key: "createdAt", value: "DESC"}]
+      const sort = dataSort.length ? dataSort : [{ key: "createdAt", value: "DESC" }]
       const payload = {
         columns: dataFilter,
         orders: [
-            ...sort
+          ...sort
         ],
         pageSize: dataPageSize,
         pageNumber: dataCurrentPage,
@@ -66,19 +69,19 @@ const ListData = (props) => {
 
       const tempData = [];
       const { resultData, pagination, isError } =
-      await handleFetchBannersDatatable(payload);
+        await handleFetchChatUsersDatatable(payload);
 
       if (isError) {
         NotificationManager.error(isError);
       } else {
         resultData.map((rowData, index) => {
-            tempData.push({
+          tempData.push({
             key: "row" + index,
             ...rowData,
-            });
+          });
         });
       }
-      
+
       if (updatedCurrentPage) setCurrentPage(updatedCurrentPage);
       if (updatedPageSize) setPageSize(updatedPageSize);
 
@@ -86,7 +89,6 @@ const ListData = (props) => {
       setListData([...tempData]);
       setIsLoading(false);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [dataFilter]
   );
 
@@ -100,7 +102,7 @@ const ListData = (props) => {
       id: data.id
     };
 
-    let { result, error } = await handleDeleteBanners(payload);
+    let { result, error } = await handleDeletePushNotifications(payload);
     if (!error) {
       result = { statusCode: 200, statusMessage: "OK" };
     } else {
@@ -138,18 +140,18 @@ const ListData = (props) => {
         message: "something went wrong, please try again",
       };
     }
-      if (alert.isSuccess) {
-        setIsModalUpdateStatusShow(false);
-        NotificationManager.success(alert.message);
-        setIsLoading(true);
-        handleGetListData(1, pageSize);
-      } else {
-        setIsModalUpdateStatusShow({
-          isLoadingPromise: false,
-          data: isModalUpdateStatusShow.data,
-        });
-        NotificationManager.error(alert.message);
-      }
+    if (alert.isSuccess) {
+      setIsModalUpdateStatusShow(false);
+      NotificationManager.success(alert.message);
+      setIsLoading(true);
+      handleGetListData(1, pageSize);
+    } else {
+      setIsModalUpdateStatusShow({
+        isLoadingPromise: false,
+        data: isModalUpdateStatusShow.data,
+      });
+      NotificationManager.error(alert.message);
+    }
   };
 
   const fetchUpdateData = async (data) => {
@@ -157,7 +159,7 @@ const ListData = (props) => {
       ...data,
     };
 
-    let { result, error } = await handleManageBanners(payload);
+    let { result, error } = await handleManagePushNotifications(payload);
     if (result.statusCode === 200) {
       result = { statusCode: 200, statusMessage: "OK" };
     }
@@ -230,7 +232,7 @@ const ListData = (props) => {
     setIsModalCreateFormShow({
       isLoadingPromise: true,
     });
-    const { result, error } = await handleManageBanners(formData);
+    const { result, error } = await handleManagePushNotifications(formData);
     if (result) {
       if (result.statusCode === 200) {
         alert = {
@@ -307,9 +309,9 @@ const ListData = (props) => {
 
   return (
     <>
-    
+
       <Card
-        title="Banners Management"
+        title="User Management"
         extra=
         {
           <button
@@ -336,9 +338,8 @@ const ListData = (props) => {
             <>
               <div className="d-flex w-100">
                 <Button
-                  className={`gx-btn-outline${
-                    isShowFilter ? "-info" : "-default"
-                  } gx-px-4`}
+                  className={`gx-btn-outline${isShowFilter ? "-info" : "-default"
+                    } gx-px-4`}
                   onClick={() => setIsShowFilter(!isShowFilter)}
                 >
                   <div className="d-flex align-items-center">

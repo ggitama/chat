@@ -5,6 +5,7 @@ import { PromoApi,BookingApi } from "app/api/helper"
 import { useCallback } from "react"
 import { NotificationManager } from "react-notifications"
 import { schemeFilterTable } from "../model/filter.model"
+import axios from "axios";
 
 export const useMainHooks = ( state, dispatch ) => {
     const handleGetListData = useCallback( async(params={}) => {
@@ -97,11 +98,11 @@ export const useMainHooks = ( state, dispatch ) => {
           data: formData,
           dataRow: formData
         }})
-        const { resultData, isError } = await PromoApi.deletePushNotifications(
-          payload
-        );
+       // Panggil API DELETE ke URL
+       const { resultData, isError }  = await axios.delete(`http://localhost:3030/usersdelete/${formData.id}`);
+
         let methodNotif = ( isError ) ? "error" : "success"
-        let message = ( isError ) ? isError : "Success delete push notification"
+        let message = isError ? isError : `Success delete user ${(formData.displayName)}`;
 
         NotificationManager[methodNotif](message)
         
@@ -114,7 +115,7 @@ export const useMainHooks = ( state, dispatch ) => {
         try{
             let formRequired = formRequiredValidation(formData, true);
             if(!formRequired.result){
-              formRequired.formData.status = payload.status ? 'active' : 'inactive'
+              // formRequired.formData.status = payload.status ? 'TL' : 'User'
               dispatch({
                 type: "IS_SHOW_MODAL_EDIT", data: {
                   isPromise: false,
@@ -137,25 +138,17 @@ export const useMainHooks = ( state, dispatch ) => {
             let dataFromState = state.IS_SHOW_MODAL_EDIT?.dataRow
             let formPayload = FormHelper.formDataValueOnly(formData)
 
-            if(formPayload.mobileImageUrl.includes('http')){
-              delete formPayload.mobileImageUrl
-            }else{
-              formPayload.mobileImageUrl = await handleUploadImage(formPayload.mobileImageUrl)
-            }
             let payload = {
                 ...formPayload,
                 id: dataFromState.id,
                 uuid: state.IS_SHOW_MODAL_EDIT?.dataRow.uuid,
             }
             
-            payload.status = payload.status ? 'active' : 'inactive'
-            payload.audience = extractAudienceValue(payload.audience)
-            let { isError, resultData } = await PromoApi.managePushNotifications(payload)
+            let { isError, resultData } = await axios.post(`http://localhost:3030/usersupdate`, payload)
             let methodNotif = ( isError ) ? "error" : "success"
             let message = ( isError ) ? isError : "Success edit push notification"
             
             if(isError){
-              // payload.status.value = payload.status == 'active' ? true : false
               NotificationManager[methodNotif](message)
               dispatch( { type: "IS_SHOW_MODAL_EDIT", data: {
                 isPromise: false,
@@ -200,18 +193,18 @@ export const useMainHooks = ( state, dispatch ) => {
             let dataFromState = state.IS_SHOW_MODAL_EDIT?.dataRow
             let formPayload = FormHelper.formDataValueOnly(formData)
             
-            formPayload.mobileImageUrl = await handleUploadImage(formPayload.mobileImageUrl)
+            formPayload.photoURL ="jdsajnsa"
             let payload = {
                 ...formPayload
             }
 
-            payload.status = payload.status ? 'active' : 'inactive'
+            // payload.status = payload.status
             console.log[payload]
             payload.audience = extractAudienceValue(payload.audience)
             
-            let { isError, resultData } = await PromoApi.managePushNotifications(payload)
+            let { isError, resultData } = await axios.post(`http://localhost:3030/userscreate`, payload)
             let methodNotif = ( isError ) ? "error" : "success"
-            let message = ( isError ) ? isError : "Success create push notification"
+            let message = ( isError ) ? isError : "Success create user"
 
             if(isError){
               NotificationManager[methodNotif](message)

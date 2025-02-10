@@ -19,14 +19,11 @@ export const ModalCreateContent = ({ formData, props, stateKey }) => {
   }
 
   let {
-    notificationName: inputnotificationName,
-    notificationType: inputnotificationType,
+    displayName: inputDisplayName,
+    email: inputEmail,
     status: inputStatus,
-    mobileImageUrl: inputMobileImageUrl,
-    sendNotificationDate: inputSendNotificationDate,
-    description: inputDescription,
-    platform: inputPlatform,
-    audience: inputAudience,
+    phoneNumber: inputPhoneNumber,
+    photoURL: inputPhotoURL,
   } = formData;
 
   return (
@@ -34,78 +31,48 @@ export const ModalCreateContent = ({ formData, props, stateKey }) => {
       <CmsDivRow>
         <CmsInput
           className={"gx-w-100"}
-          {...inputnotificationName}
+          {...inputDisplayName}
           onChange={(e) => {
-            handler.handleFormUpdate("notificationName", e.target.value);
+            handler.handleFormUpdate("displayName", e.target.value);
           }}
         />
       </CmsDivRow>
       <CmsDivRow>
-        <CmsSelect
-          {...inputnotificationType}
-          onChange={(e) => {
-            handler.handleFormUpdate("notificationType", e);
-          }}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsSelect
-          {...inputPlatform}
-          onChange={(e) => {
-            handler.handleFormUpdate("platform", e);
-          }}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsSwitch
+        <CmsInput
           className={"gx-w-100"}
+          {...inputEmail}
+          onChange={(e) => {
+            handler.handleFormUpdate("email", e.target.value);
+          }}
+        />
+      </CmsDivRow>
+      <CmsDivRow>
+        <CmsSelect
           {...inputStatus}
-          style={{ width: "80px" }}
-          checkedChildren="Active"
-          unCheckedChildren="Inactive"
           onChange={(e) => {
             handler.handleFormUpdate("status", e);
           }}
-          required={false}
         />
       </CmsDivRow>
       <CmsDivRow>
+        <CmsInput
+          className={"gx-w-100"}
+          {...inputPhoneNumber}
+          onChange={(e) => {
+            handler.handleFormUpdate("phoneNumber", e.target.value);
+          }}
+        />
+      </CmsDivRow>
+      {/* <CmsDivRow>
         <CmsUpload
           className={"gx-w-100"}
-          {...inputMobileImageUrl}
-          name={"mobileImageUrl"}
+          {...inputPhotoURL}
+          name={"photoURL"}
           formUpdate={handler}
           action={`${process.env.NEXT_PUBLIC_BASE_URL_API_BOOKING}/resources/submit`}
         />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsDate
-          className={"gx-w-100"}
-          {...inputSendNotificationDate}
-          onChange={(date, dateString) => {
-            handler.handleFormUpdate("sendNotificationDate", dateString);
-          }}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsSelect
-          {...inputAudience}
-          onChange={(e) => {
-            handler.handleFormUpdate("audience", e);
-          }}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsTextArea
-          className={"gx-w-100"}
-          {...inputDescription}
-          required={true}
-          resizeable={false}
-          onChange={(e) => {
-            handler.handleFormUpdate("description", e.target.value);
-          }}
-        />
-      </CmsDivRow>
+      </CmsDivRow> */}
+     
     </>
   );
 };

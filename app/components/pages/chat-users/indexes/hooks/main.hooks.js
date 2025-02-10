@@ -1,26 +1,47 @@
 import FilterHelper from "@/util/cms/filter.helper"
 import FormHelper from "@/util/cms/form.helper"
 import { formRequiredValidation } from "@/util/formValidation"
-import { PromoApi,BookingApi } from "app/api/helper"
+import { PromoApi,BookingApi,ChatApi } from "app/api/helper"
 import { useCallback } from "react"
 import { NotificationManager } from "react-notifications"
 import { schemeFilterTable } from "../model/filter.model"
-import axios from "axios";
 
 export const useMainHooks = ( state, dispatch ) => {
     const handleGetListData = useCallback( async(params={}) => {
         dispatch({ type: "LOAD_START"})
-        const response = await axios.get('http://localhost:3030/users');
-        console.log('API response:', response.data); // Check the API response
 
-        if (response.data && response.data.length > 0) {
-            dispatch({ type: "SET_DATA_LIST", data: response.data });
-        } else {
-            console.log('No data returned from API.');
-            dispatch({ type: "SET_DATA_LIST", data: [] });
+        let {
+            currentPage:newCurrentPage,
+            pageSize:newPageSize,
+            filter,
+            orderBy:newOrderArray
+         } = params
+
+        let filterInputDataValue = filter || state.DATA_FILTER
+        let pageSize = newPageSize || state?.pagination?.pageSize
+        let orderArray = newOrderArray || state?.DATA_SORT
+        
+        if(orderArray.length == 0){
+          orderArray.push({ key: "createdAt", value: "DESC" })
+        } else if(orderArray.length > 1){
+          orderArray = orderArray.filter(function( obj ) {
+            return obj.key !== 'createdAt';
+          });
         }
+        
+        let payload = {
+            columns:filterInputDataValue,
+            orders:orderArray,
+            pageNumber:newCurrentPage || state?.pagination?.currentPage,
+            pageSize:pageSize
+        }
+        let { isError, pagination, resultData } = await ChatApi.fetchChatUsersDatatable(payload)
+        let methodNotif = ( isError ) ? "error" : "success"
+        let message = ( isError ) ? isError : ""
 
-        dispatch( { type: "LOAD_SUCCESS", data: response} )
+        if(isError) NotificationManager[methodNotif](message)
+
+        dispatch( { type: "LOAD_SUCCESS", data: resultData, pagination} )
     }, [] )
 
     const handleChangePagination = async({

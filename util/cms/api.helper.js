@@ -1,25 +1,18 @@
 import MainService from "app/api/base"
+import axios from "axios";
 
 const ApiHelper = {
-  generalResponse:(response)=>{
-    let { result,error } = response
-    let resultData = false
-    let paging = false
-    let isError = error?.message
-  
-    if(result){
-      let isOkay = result.statusCode===200
-      isError = (!isOkay) ? result.statusMessage : ""
-      if(isOkay){
-        resultData = result.responseData
-        paging= result.paging
-      }
+  generalResponse: (response) => {
+    if (response.success) {
+      return {
+        isError: false,
+        resultData: response.data,
+      };
     }
     return {
-      resultData,
-      pagination:paging,
-      isError
-    }
+      isError: response.error,
+      resultData: [],
+    };
   },
   handleGeneralError:(error) =>{
     console.log("General Error", error)
@@ -72,44 +65,67 @@ const ApiHelper = {
   
     return _this._returnDefaultResponse(bodyResult,errorJS)
   },
-  handleGETRequest:async ({
-    api,
-    param:params={},
-    query:query={},
-    noAuth = false
-  }) => {
-    // let lang = localStorage.getItem("i18nextLng") ? localStorage.getItem("i18nextLng") : process.env.REACT_APP_DEFAULT_LANG;
-    
-    const {
-      result: { body: bodyResult },
-      errorJS=null
-    }  = await MainService(api)
-      .doRequest({ 
-        noAuth,
-        params: { ...params }, 
-        query: { ...query }, 
+  handleGETRequest: async ({ api, body }) => {
+    try {
+      // Map API endpoint
+      const apiEndpoints = {
+        fetchPushNotificationsDatatable: 'http://localhost:3030/users',
+      };
+
+      const apiUrl = apiEndpoints[api];
+
+      if (!apiUrl) throw new Error('Invalid API endpoint');
+
+      // Request dengan query parameters dari body
+      const response = await axios.get(apiUrl, { params: body });
+
+      return {
+        success: true,
+        data: response.data,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  },
+  handleDELRequest: async (
+    param, body, formData
+  ) => {
+    try {
+      // Map API endpoints
+      const apiEndpoints = {
+        deletePushNotifications: `http://localhost:3030/usersdelete/${formData.uuid}`,
+      };
+  
+      console.log(body);
+      const apiUrl = apiEndpoints[api];
+  
+      if (!apiUrl) throw new Error("Invalid API endpoint");
+  
+      const {
+        result: { body: bodyResult },
+        errorJS = null,
+      } = await axios.delete(apiUrl, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
       .then((res) => res)
       .catch((errorGeneral) => {
         _this.handleGeneralError(errorGeneral);
-        return _this._catchErrorResponse(bodyResult,errorGeneral)
+        return _this._catchErrorResponse(bodyResult, errorGeneral);
       });
-
-    return _this._returnDefaultResponse(bodyResult,errorJS)
-
-  },
-  _catchErrorResponse:(bodyResult,error)=>{
-    return {
-      result: { result: bodyResult },
-      errorJS: error,
-    };
-  },
-  _returnDefaultResponse:(bodyResult,error=null)=>{
-    return { result: bodyResult , error:error};
+  
+      return _this._returnDefaultResponse(bodyResult, errorJS);
+    } catch (error) {
+      return { isError: true, message: error.message };
+    }
   }
+  
+
 }
 
-// alias so it's shorter 
-// and more readble in circular access
 const _this = ApiHelper
 export default ApiHelper

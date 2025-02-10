@@ -34,8 +34,7 @@ export const ModalDeleteContent = ({
       <div className="gx-fs-xl gx-font-wight-semi-bold gx-w-100 gx-text-center gx-mt-4">
         Are you sure to{" "}
         
-        Delete {" "}
-        popup - {state[stateKey]?.dataRow?.title}
+        Delete {state[stateKey]?.dataRow?.displayName}
         <span style={{ color: blue[5] }}>
         </span>{}
         ?
