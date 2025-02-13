@@ -90,6 +90,31 @@ const ApiHelper = {
       };
     }
   },
+  handleGETChatsRequest: async ({ api, body }) => {
+    try {
+      // Map API endpoint
+      const apiEndpoints = {
+        fetchPopupsDatatable: 'http://localhost:3030/chats',
+      };
+
+      const apiUrl = apiEndpoints[api];
+
+      if (!apiUrl) throw new Error('Invalid API endpoint');
+
+      // Request dengan query parameters dari body
+      const response = await axios.get(apiUrl, { params: body });
+
+      return {
+        success: true,
+        data: response.data,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message,
+      };
+    }
+  },
   handleDELRequest: async (
     param, body, formData
   ) => {

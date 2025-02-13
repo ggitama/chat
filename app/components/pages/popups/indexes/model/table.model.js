@@ -22,129 +22,37 @@ export const columnsTable = (
       align: "center",
       width: 50,
       render:(text,row,index)=>{
-        let rowIndex = state.pagination.pageSize*(state.pagination.currentPage-1)
-        return rowIndex+index+1
+        return index + 1;
       }
     },
     {
-      title: (
-        <SortableHeader
-          dataSource={state.DATA_SORT}
-          onChange={(value) => {
-            handler.sortableOnChange(value)}
-          }
-          dataKey="popupTitle"
-          title="Popup Title"
-        />
-      ),
-      fixed: true,
-      dataIndex: "popupTitle",
-      key: "popupTitle",
-      width: 180
+      title: 'Name',
+      key: 'name', 
+      dataIndex: 'name', 
     },
     {
-      title: (
-        <SortableHeader
-          dataSource={state.DATA_SORT}
-          onChange={(value) => {
-            handler.sortableOnChange(value)}
-          }
-          dataKey="popupSubtitle"
-          title="Popup Subtitle"
-        />
-      ),
-      dataIndex: "popupSubtitle",
-      key: "popupSubtitle",
-      width: 180
+      title: 'Type', 
+      key: 'type', 
+      dataIndex: 'type', 
     },
     {
-      title: "Home Page Image",
-      dataIndex: "desktopImageUrl",
-      key: "desktopImageUrl",
-      render: (text, row, index) => (
-        <Image src={`${row.desktopImageUrl}`} fallback={fallback} preview={false} crossOrigin={"true"} width={width} alt="test image" />
-      ),
-      width: 180
-    },
-    {
-      title: "Mobile Image",
-      dataIndex: "mobileImageUrl",
-      key: "mobileImageUrl",
-      render: (text, row, index) => (
-        <Image src={`${row.mobileImageUrl}`} fallback={fallback} preview={false} crossOrigin={"true"} width={width} alt="test image" />
-      ),
-      width: 180
-    },
-    {
-      title: "Url Type",
-      dataIndex: "urlType",
-      key: "urlType",
-      width: 180,
-      render: (text, row, index) => {
-        let parsing;
-        switch (row.urlType) {
-          case 'none':
-            parsing = 'None'
-            break;
-          case 'external':
-            parsing = 'External'
-            break;
-          case 'internal_promo':
-            parsing = 'Internal - Promo'
-            break;
-          default:
-            parsing = row.urlType
-            break;
-        }
-        return parsing;
-      },
-    },
-    {
-      title: (
-        <SortableHeader
-          dataSource={state.DATA_SORT}
-          onChange={(value) => {
-            handler.sortableOnChange(value)}
-          }
-          dataKey="startDate"
-          title="Start Date"
-        />
-      ),
-      dataIndex: "startDate",
-      key: "startDate",
-      width: 180
-    },
-    {
-      title: (
-        <SortableHeader
-          dataSource={state.DATA_SORT}
-          onChange={(value) => {
-            handler.sortableOnChange(value)}
-          }
-          dataKey="endDate"
-          title="End Date"
-        />
-      ),
-      dataIndex: "endDate",
-      key: "endDate",
-      width: 180
-    },
-    {
-      title: (
-        <SortableHeader
-          dataSource={state.DATA_SORT}
-          onChange={(value) => {
-            handler.sortableOnChange(value)}
-          }
-          dataKey="status"
-          title="Status"
-        />
-      ),
-      dataIndex: "status",
-      key: "status",
-      width: 180
-    },
-
+      title: 'Members',
+      key: 'members',
+      dataIndex: 'members',
+      render: (value) => {
+        if (!Array.isArray(value) || value.length === 0) return '-';
+    
+        return (
+          <ul>
+            {value.map((member, index) => (
+              <li key={index}>
+                <strong>{member.displayName}</strong> — <em>{member.email}</em>
+              </li>
+            ))}
+          </ul>
+        );
+      }
+    },         
     {
       title: "Action",
       key: "action",

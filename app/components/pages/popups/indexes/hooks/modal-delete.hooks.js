@@ -46,7 +46,7 @@ export const useModalDeleteHooks = (state,dispatch,stateKey)=>{
       let dataRow =stateValue.dataRow 
 
       let modalForm = schemaModal()
-      ModelHelper.setter(modalForm,"popupTitle",dataRow?.popupTitle)
+      ModelHelper.setter(modalForm,"name",dataRow?.name)
 
       setFormData({
         ...modalForm
@@ -64,3 +64,17 @@ export const useModalDeleteHooks = (state,dispatch,stateKey)=>{
   ]
 }
 
+// export const useModalDeleteHooks = ({ state, stateKey }) => {
+//   return {
+//       activeFormData: state[stateKey]?.data || {},
+//       footerHandler: {
+//           handleModalDeleteSubmit: (data, callback) => {
+//               console.log("Data yang dikirim ke API delete:", data);
+//               // Panggil API delete di sini...
+//           },
+//           handleClearFormData: () => {
+//               console.log("Form data dibersihkan");
+//           }
+//       }
+//   };
+// };

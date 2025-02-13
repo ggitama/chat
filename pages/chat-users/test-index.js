@@ -43,23 +43,23 @@ const ScreenPage = (props) => {
             />
             <CmsTable
                 title={pageTitle}
-                btnActions={
-                    <Row justify={'end'} style={{
-                        margin: "-25px 0 -15px"
-                    }}>
-                        <button
-                            type="button"
-                            className="ant-btn ant-btn-primary gx-my-4"
-                            onClick={() =>
-                                dispatch({type:"IS_SHOW_MODAL_CREATE",data:{
-                                    isPromise:false
-                                }})
-                            }
-                            >
-                            <span>Create New Data</span>
-                        </button>
-                    </Row>
-                }
+                // btnActions={
+                //     <Row justify={'end'} style={{
+                //         margin: "-25px 0 -15px"
+                //     }}>
+                //         <button
+                //             type="button"
+                //             className="ant-btn ant-btn-primary gx-my-4"
+                //             onClick={() =>
+                //                 dispatch({type:"IS_SHOW_MODAL_CREATE",data:{
+                //                     isPromise:false
+                //                 }})
+                //             }
+                //             >
+                //             <span>Create New Data</span>
+                //         </button>
+                //     </Row>
+                // }
                 tableConfig={tableConfig}
                 columnsTable={columnsTable}
                 listData={state?.DATA_LIST}

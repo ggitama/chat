@@ -46,7 +46,7 @@ export const useModalDeleteHooks = (state,dispatch,stateKey)=>{
       let dataRow =stateValue.dataRow 
 
       let modalForm = schemaModal()
-      ModelHelper.setter(modalForm,"notificationName",dataRow?.notificationName)
+      ModelHelper.setter(modalForm,"name",dataRow?.name)
 
       setFormData({
         ...modalForm

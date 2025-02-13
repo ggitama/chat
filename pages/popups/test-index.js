@@ -16,7 +16,7 @@ import { useModalDeleteHooks } from "@/components/pages/popups/indexes/hooks/mod
 import { Row } from "antd"
 
 const ScreenPage = (props) => {
-    const pageTitle = "Popups Management"
+    const pageTitle = "Chats Management"
     const { screenHeight, screenWidth } = props
     const tableHeight = DataTableHelper.tableHeight(screenHeight)
     const tableConfig = DataTableHelper.tableConfig(tableHeight)
@@ -66,12 +66,12 @@ const ScreenPage = (props) => {
                 props={{state,dispatch,handler}}
                 pageSizeOptions={[10,25,50,100]}
             >
-                <CmsTableRow key={"prepend"}>
+                {/* <CmsTableRow key={"prepend"}>
                     <CmsFilter
                         filterFormData={state.FORM_FILTER}
                         props={{state,dispatch,handler}}
                     />
-                </CmsTableRow>
+                </CmsTableRow> */}
             </CmsTable>
 
             <CmsModal
@@ -96,7 +96,7 @@ const ScreenPage = (props) => {
                 <ModalEditContent></ModalEditContent>
             </CmsModal>
             <CmsModal
-                title={"Create Popup"}
+                title={"Create Push"}
                 hasTitleKey={false}
                 stateKey={"IS_SHOW_MODAL_CREATE"}
                 props={{state,dispatch,handler}}
@@ -128,16 +128,14 @@ const ScreenPage = (props) => {
                     footerHandler.handleClearFormData()
                 }}
                 onClickConfirm={(activeFormData,footerHandler)=>{
-                    footerHandler.handleModalDeleteSubmit(activeFormData,
-                    ()=>{
-                        footerHandler.handleClearFormData()
-                    })
+                    footerHandler.handleModalDeleteSubmit(activeFormData, () => {
+                        footerHandler.handleClearFormData();
+                    });
+                    
                 }}
                 >
-
                 <ModalDeleteContent></ModalDeleteContent>
             </CmsModal>
-
         </>
     )
 }

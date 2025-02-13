@@ -1,12 +1,38 @@
 
 export const schemeFilterTable = () => [
   {
-    label: "Popup Title",
+    label: "Notification Name",
     type: "Input",
-    field: "popupTitle",
+    field: "notificationName",
     value: "",
     width: "25%"
   },
+  {
+    label: "Notification Type",
+    type: "Select",
+    field: "notificationType",
+    value: "",
+    options: [
+      { value: "", label: "All" },
+      { value: "info", label: "Info" },
+      { value: "promo", label: "Promo" },
+    ],
+    width: "25%",
+    height: "150px"
+  },  
+  {
+    label: "Platform",
+    type: "Select",
+    field: "platform",
+    value: "",
+    options: [
+      { value: "", label: "All" },
+      { value: "android", label: "Android" },
+      { value: "ios", label: "iOS" },
+    ],
+    width: "25%",
+    height: "150px"
+  },  
   {
     label: "Status",
     type: "Select",
@@ -21,16 +47,9 @@ export const schemeFilterTable = () => [
     height: "150px"
   },  
   {
-    label: "Start Date",
+    label: "Send Notification Date",
     type: "Date",
-    field: "startDate",
-    value: "",
-    width: "25%",
-  },
-  {
-    label: "End Date",
-    type: "Date",
-    field: "endDate",
+    field: "sendNotificationDate",
     value: "",
     width: "25%",
   },

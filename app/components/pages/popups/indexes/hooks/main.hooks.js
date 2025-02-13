@@ -5,6 +5,7 @@ import { PromoApi,BookingApi } from "app/api/helper"
 import { useCallback } from "react"
 import { NotificationManager } from "react-notifications"
 import { schemeFilterTable } from "../model/filter.model"
+import axios from "axios";
 
 export const useMainHooks = ( state, dispatch ) => {
     const handleGetListData = useCallback( async(params={}) => {
@@ -88,33 +89,33 @@ export const useMainHooks = ( state, dispatch ) => {
     }
 
     const handleModalDeleteSubmit = async( formData, callback )=> {
-        let alert = "";
-        let payload = {
-          uuid: state.IS_SHOW_MODAL_DELETE.dataRow.uuid,
-        }
-        dispatch( { type: "IS_SHOW_MODAL_DELETE", data: {
-          isPromise: true,
-          data: formData,
-          dataRow: formData
-        }})
-        const { resultData, isError } = await PromoApi.deletePopups(
-          payload
-        );
-        let methodNotif = ( isError ) ? "error" : "success"
-        let message = ( isError ) ? isError : "Success delete popup"
+      let alert = "";
+      let payload = {
+        uuid: state.IS_SHOW_MODAL_DELETE.dataRow.id,
+      }
+      dispatch( { type: "IS_SHOW_MODAL_DELETE", data: {
+        isPromise: true,
+        data: formData,
+        dataRow: formData
+      }})
+     // Panggil API DELETE ke URL
+     const { resultData, isError }  = await axios.delete(`http://localhost:3030/chatsdelete/${state.IS_SHOW_MODAL_DELETE.dataRow.id}`);
 
-        NotificationManager[methodNotif](message)
-        
-        callback()
-        dispatch( {type: "IS_SHOW_MODAL_DELETE", data: false} )
-        handleGetListData()
-    }
+      let methodNotif = ( isError ) ? "error" : "success"
+      let message = isError ? isError : `Success delete ${(state.IS_SHOW_MODAL_DELETE.dataRow.name)}`;
+
+      NotificationManager[methodNotif](message)
+      
+      callback()
+      dispatch( {type: "IS_SHOW_MODAL_DELETE", data: false} )
+      handleGetListData()
+  }
     
     const handleModalEditSubmit = async( formData, callback ) => {
         try{
             let formRequired = formRequiredValidation(formData, true);
             if(!formRequired.result){
-              formRequired.formData.status = payload.status ? 'active' : 'inactive'
+              // formRequired.formData.status = payload.status ? 'TL' : 'User'
               dispatch({
                 type: "IS_SHOW_MODAL_EDIT", data: {
                   isPromise: false,
@@ -123,8 +124,10 @@ export const useMainHooks = ( state, dispatch ) => {
                 }
               })
               
+              console.log('edit action fail')
               return;
             }
+
             formRequired.formData.id = state.IS_SHOW_MODAL_EDIT?.dataRow.id;
 
             dispatch( { type: "IS_SHOW_MODAL_EDIT", data: {
@@ -134,37 +137,17 @@ export const useMainHooks = ( state, dispatch ) => {
 
             let dataFromState = state.IS_SHOW_MODAL_EDIT?.dataRow
             let formPayload = FormHelper.formDataValueOnly(formData)
-            
-            if(formPayload.homeImageUrl.includes('http')){
-              delete formPayload.homeImageUrl
-            }else{
-              formPayload.homeImageUrl = await handleUploadImage(formPayload.homeImageUrl)
-            }
 
-            // if(formPayload.detailsImageUrl.includes('http')){
-            //   delete formPayload.detailsImageUrl
-            // }else{
-            //   formPayload.detailsImageUrl = await handleUploadImage(formPayload.detailsImageUrl)
-            // }
-
-            if(formPayload.mobileImageUrl.includes('http')){
-              delete formPayload.mobileImageUrl
-            }else{
-              formPayload.mobileImageUrl = await handleUploadImage(formPayload.mobileImageUrl)
-            }
             let payload = {
                 ...formPayload,
                 id: dataFromState.id,
-                uuid: state.IS_SHOW_MODAL_EDIT?.dataRow.uuid,
             }
             
-            payload.status = payload.status ? 'active' : 'inactive'
-            let { isError, resultData } = await PromoApi.managePopups(payload)
+            let { isError, resultData } = await axios.post(`http://localhost:3030/chatsupdate`, payload)
             let methodNotif = ( isError ) ? "error" : "success"
-            let message = ( isError ) ? isError : "Success edit popup"
+            let message = ( isError ) ? isError : "Success edit push notification"
             
             if(isError){
-              // payload.status.value = payload.status == 'active' ? true : false
               NotificationManager[methodNotif](message)
               dispatch( { type: "IS_SHOW_MODAL_EDIT", data: {
                 isPromise: false,
@@ -175,8 +158,6 @@ export const useMainHooks = ( state, dispatch ) => {
             }else{
               NotificationManager[methodNotif](message)
             }
-
-
             callback()
             dispatch( {type: "IS_SHOW_MODAL_EDIT", data: false} )
             resetSortAndFilter()
@@ -187,60 +168,70 @@ export const useMainHooks = ( state, dispatch ) => {
     }
 
     const handleModalCreateSubmit = async( formData, callback ) => {
-        try{
-            let formRequired = formRequiredValidation(formData);
+      try{
+          let formRequired = formRequiredValidation(formData);
 
-            if(!formRequired.result){
-              dispatch({
-                type: "IS_SHOW_MODAL_CREATE", data: {
-                  isPromise: false,
-                  data: formRequired.formData
-                }
-              })
-
-              return;
-            }
-
-            dispatch( { type: "IS_SHOW_MODAL_CREATE", data: {
-                isPromise: true,
-                data: formData
-            }})
-
-            let dataFromState = state.IS_SHOW_MODAL_EDIT?.dataRow
-            let formPayload = FormHelper.formDataValueOnly(formData)
-            
-
-            formPayload.homeImageUrl = await handleUploadImage(formPayload.homeImageUrl)
-            // formPayload.detailsImageUrl = await handleUploadImage(formPayload.detailsImageUrl)
-            formPayload.mobileImageUrl = await handleUploadImage(formPayload.mobileImageUrl)
-            let payload = {
-                ...formPayload
-            }
-
-            payload.status = payload.status ? 'active' : 'inactive'
-            let { isError, resultData } = await PromoApi.managePopups(payload)
-            let methodNotif = ( isError ) ? "error" : "success"
-            let message = ( isError ) ? isError : "Success create popup"
-
-            if(isError){
-              NotificationManager[methodNotif](message)
-              dispatch( { type: "IS_SHOW_MODAL_CREATE", data: {
+          if(!formRequired.result){
+            dispatch({
+              type: "IS_SHOW_MODAL_CREATE", data: {
                 isPromise: false,
                 data: formRequired.formData
-              }})
-              return
-            }else{
-              NotificationManager[methodNotif](message)
-            }
+              }
+            })
 
-            callback()
-            dispatch( {type: "IS_SHOW_MODAL_CREATE", data: false} )
-            resetSortAndFilter()
-            handleGetListData()
-        } catch(error) {
-            dispatch( {type: "IS_MODAL_CREATE", data:formData} )
-        }
+            return;
+          }
+
+          dispatch( { type: "IS_SHOW_MODAL_CREATE", data: {
+              isPromise: true,
+              data: formData
+          }})
+
+          let dataFromState = state.IS_SHOW_MODAL_EDIT?.dataRow
+          let formPayload = FormHelper.formDataValueOnly(formData)
+          
+          const payload = {
+            ...formPayload,
+          };
+
+          payload.createdBy = "Admin"
+          payload.recentMessage = ""
+          console.log[payload]
+          
+          let { isError, resultData } = await axios.post(`http://localhost:3030/chatscreate`, payload)
+          let methodNotif = ( isError ) ? "error" : "success"
+          let message = ( isError ) ? isError : "Success create user"
+
+          if(isError){
+            NotificationManager[methodNotif](message)
+            dispatch( { type: "IS_SHOW_MODAL_CREATE", data: {
+              isPromise: false,
+              data: formRequired.formData
+            }})
+            return
+          }else{
+            NotificationManager[methodNotif](message)
+          }
+
+          callback()
+          dispatch( {type: "IS_SHOW_MODAL_CREATE", data: false} )
+          resetSortAndFilter()
+          handleGetListData()
+      } catch(error) {
+          dispatch( {type: "IS_MODAL_CREATE", data:formData} )
+      }
+  }
+
+    const extractAudienceValue = (audience) => {
+      // Periksa apakah audience adalah objek dengan properti 'value'
+      if (typeof audience === 'object' && audience !== null && 'value' in audience) {
+          // Lakukan rekursif jika audience.value masih objek
+          return extractAudienceValue(audience.value);
+      }
+      // Kembalikan nilai jika sudah dalam bentuk akhir
+      return audience;
     }
+  
 
     const resetSortAndFilter = async() => {
       dispatch({ type:"DATA_SORT",data:[] })
@@ -252,7 +243,7 @@ export const useMainHooks = ( state, dispatch ) => {
     let handleUploadImage = async(data) => {
       let payload = {
         data: data,
-        path: 'popup'
+        path: 'push-notification'
       }
       const { resultData, error } = await BookingApi.uploadToCloud(payload);
       return resultData.path;

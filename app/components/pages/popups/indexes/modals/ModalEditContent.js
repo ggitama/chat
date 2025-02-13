@@ -3,7 +3,14 @@ import { CmsSwitch } from "@/components/Cms/Form/Switch"
 import { CmsTextArea } from "@/components/Cms/Form/Textarea"
 import { CmsUpload } from "@/components/Cms/Form/Upload"
 import { CmsTextEditor } from "@/components/Cms/Form/TextEditor"
-
+import { useState, useEffect } from "react"
+import { handleFetchCustomerList } from "app/api/helper";
+import { CmsSelectMultiple } from "@/components/Cms/Form/SelectMultiple";
+import { isArray } from "lodash"
+import { Checkbox } from 'antd'; 
+import { Select, Spin } from 'antd'; // Menggunakan Select dari Ant Design
+import axios from 'axios'; // Untuk melakukan request API
+const { Option } = Select
 const { CmsLoader } = require("@/components/Cms")
 const { CmsDivRow, CmsInput, CmsSelect } = require("@/components/Cms/Form")
 
@@ -24,136 +31,79 @@ export const ModalEditContent = ({
     )
   }
 
-  let {
-    popupTitle:inputTitle,
-    popupSubtitle:inputSubtitle,
-    status:inputStatus,
-    urlLink:inputUrlLink,
-    urlType:inputUrlType,
-    urlTarget:inputUrlTarget,
-    promoId:inputPromoId,
-    homeImageUrl:inputHomeImageUrl,
-    mobileImageUrl:inputMobileImageUrl,
-    startDate:inputStartDate,
-    endDate:inputEndDate,
-    popupDescription:inputDescription,
-    platform: inputPlatform,
-  } = formData
+  const [selectedMembers, setSelectedMembers] = useState(formData.members || []);  // Inisialisasi dengan data awal
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    // Mengambil data anggota dari API
+    const fetchMembers = async () => {
+      try {
+        const response = await axios.get('http://localhost:3030/users');  // Gantilah dengan URL API Anda
+        setMembers(response.data);  // Simpan data yang diambil ke state members
+        setLoading(false);  // Matikan loading setelah data berhasil diambil
+      } catch (error) {
+        console.error('Error fetching members:', error);
+        setLoading(false);
+      }
+    };
+    fetchMembers();  // Panggil fungsi untuk mengambil data
+  }, []);
 
-  console.log({formData});
+  const handleSelectChange = (value) => {
+    setSelectedMembers(value);  // Update selectedMembers
+
+    // Update formData dengan nilai baru untuk members
+    const selectedMembersData = members.filter((member) => value.includes(member.uid));
+    handler.handleFormUpdate("members", selectedMembersData);  // Update formData dengan data lengkap anggota
+  };
+
+  let {
+    name: inputName,
+    type: inputType,
+    members: inputMembers,
+  } = formData
 
   return (
     <>
       <CmsDivRow>
         <CmsInput className={"gx-w-100"}
-          {...inputTitle}
+          {...inputName}
           onChange={(e)=>{
-            handler.handleFormUpdate("popupTitle",e.target.value)
-          }}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsInput className={"gx-w-100"}
-          {...inputSubtitle}
-          onChange={(e)=>{
-            handler.handleFormUpdate("popupSubtitle",e.target.value)
+            handler.handleFormUpdate("name",e.target.value)
           }}
         />
       </CmsDivRow>
       <CmsDivRow>
         <CmsSelect
-          {...inputPlatform}
+          {...inputType}
           onChange={(e) => {
-            handler.handleFormUpdate("platform", e);
+            handler.handleFormUpdate("type", e);
           }}
         />
       </CmsDivRow>
       <CmsDivRow>
-        <CmsSwitch className={"gx-w-100"}
-          {...inputStatus}
-          style={{width: "80px"}}
-          checkedChildren={"Active"}
-          unCheckedChildren={"Inactive"}
-          onChange={(e)=>{
-            handler.handleFormUpdate("status",e)
-          }}
-          required={false}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsSelect
-          {...inputUrlType}
-          onChange={(e)=>{
-            handler.handleFormUpdate("urlType",e)
-          }}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsSelect
-          {...inputPromoId}
-          onChange={(e)=>{
-            handler.handleFormUpdate("promoId",e)
-          }}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsInput className={"gx-w-100"}
-          {...inputUrlLink}
-          onChange={(e)=>{
-            handler.handleFormUpdate("urlLink",e.target.value)
-          }}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsSelect
-          {...inputUrlTarget}
-          onChange={(e)=>{
-            handler.handleFormUpdate("urlTarget",e)
-          }}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsUpload className={"gx-w-100"}
-          {...inputHomeImageUrl}
-          name={"homeImageUrl"}
-          formUpdate={handler}
-          action={`${process.env.NEXT_PUBLIC_BASE_URL_API_BOOKING}/resources/submit`}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsUpload className={"gx-w-100"}
-          {...inputMobileImageUrl}
-          name={"mobileImageUrl"}
-          formUpdate={handler}
-          action={`${process.env.NEXT_PUBLIC_BASE_URL_API_BOOKING}/resources/submit`}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsDate className={"gx-w-100"}
-          {...inputStartDate}
-          onChange={(date, dateString)=>{
-            handler.handleFormUpdate("startDate", dateString)
-          }}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsDate className={"gx-w-100"}
-          {...inputEndDate}
-          onChange={(date, dateString)=>{
-            handler.handleFormUpdate("endDate", dateString)
-          }}
-        />
-      </CmsDivRow>
-      <CmsDivRow>
-        <CmsTextArea
-          className={"gx-w-100"}
-          {...inputDescription}
-          required={false}
-          resizeable={false}
-          onChange={(e) => {
-            handler.handleFormUpdate("popupDescription", e.target.value);
-          }}
-        />
+        <h5 style={{ fontWeight: "bold" }}>Members</h5>  {/* Menggunakan h5 karena h7 tidak valid */}
+        <Select
+          mode="multiple" // MultiSelect aktif
+          value={selectedMembers} // Nilai yang dipilih
+          onChange={handleSelectChange} // Handler perubahan nilai
+          placeholder="Please select members"
+          style={{ width: "100%" }}
+          disabled={!inputType?.value} // Tambahkan ?. untuk menghindari error
+        >
+          {loading ? (
+            <Option disabled key="loading">Loading...</Option>
+          ) : (
+            members.length > 0 ? members.map((member) => (
+              <Option key={member.uid} value={member.uid}>
+                {member.displayName || member.email} {/* Menampilkan nama atau email */}
+              </Option>
+            )) : (
+              <Option disabled key="no-data">No members available</Option>
+            )
+          )}
+        </Select>
       </CmsDivRow>
     </>
   )
